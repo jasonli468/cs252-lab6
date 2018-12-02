@@ -3,7 +3,8 @@
 	box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.15);
 	padding: 20px 40px;
 	height: 80px;
-	box-sizing: border-box;
+    box-sizing: border-box;
+    margin-bottom:15px;
 }
 
 .header-basic .header-limiter {
@@ -20,7 +21,7 @@
 }
 
 .header-basic .header-limiter h1 span {
-	color: #5383d3;
+	color: #5393d3;
 }
 
 .header-basic .header-limiter a {
@@ -48,4 +49,41 @@
 body{
     margin:0px;
     padding:0px;
+}
+
+label{
+    font-weight: 500;
+}
+
+input{
+    width: 100%;
+    padding: 12px 20px;
+    display: inline-block;
+    border: 1px solid #aaaaaa;
+    box-sizing: border-box;
+}
+
+input[type=submit]{
+    background-color: #131f28;
+    color: white;
+}
+
+h2{
+    margin-bottom:15px;
+}
+
+.bigbr{
+    line-height: 35px;
+}
+
+.error{
+    color: red;
+}
+
+.success{
+    color: green;
+}
+
+.warning{
+    color: yellowgreen;
 }
