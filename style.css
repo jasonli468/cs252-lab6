@@ -51,11 +51,11 @@ body{
     padding:0px;
 }
 
-label{
+label:not(.normal){
     font-weight: 500;
 }
 
-input{
+input:not([type=checkbox]){
     width: 100%;
     padding: 12px 20px;
     display: inline-block;
@@ -86,4 +86,8 @@ h2{
 
 .warning{
     color: yellowgreen;
+}
+
+.right{
+    float: right;
 }
