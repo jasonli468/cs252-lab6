@@ -57,6 +57,7 @@
     
     <title>Home - Hungry but Indicisive Boiler</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="shortcut icon" type="image/png" href="favicon.ico"/>
 </head>
 <body>
 <?php include 'header.php';?>
