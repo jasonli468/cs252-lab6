@@ -1,8 +1,20 @@
 <?php
-    session_save_path('/home/campus/li2384/www//tmp');
+    session_save_path('/home/campus/li2384/www/tmp');
     session_start();
     session_unset();
     session_destroy();
+    if(isset($_COOKIE['login']))
+    {
+        include 'dbconnect.php';
+        $tokenArray = explode(',', $_COOKIE['login']);
+        $deleteQuery = mysqli_prepare($con, "DELETE FROM Login_Tokens WHERE User_ID = ? AND Token_Hash = ?");
+        mysqli_stmt_bind_param($deleteQuery, "is", $tokenArray[0], hash('sha256', $tokenArray[1]));
+        mysqli_stmt_execute($deleteQuery);
+        mysqli_stmt_close($deleteQuery);
+        mysqli_close($con);
+        unset($_COOKIE['login']);
+        setcookie('login', '', 1, "", "", true, true);
+    }
     header("refresh:3;url=index.php" );
 ?>
 <!DOCTYPE html>

@@ -1,5 +1,5 @@
 <?php
-    session_save_path('/home/campus/li2384/www//tmp');
+    session_save_path('/home/campus/li2384/www/tmp');
     session_start();
 ?>
 <!DOCTYPE html>

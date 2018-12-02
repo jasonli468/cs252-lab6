@@ -1,7 +1,6 @@
 <?php
     $email = $_POST['email'];
     $password = $_POST['password'];
-
     if(isset($email) && isset($password))
     {
         // Connect to the database and attempt to get information for the selected email
@@ -21,10 +20,21 @@
             {
                 // Credentials correct, return success, start a session, and store all relevant variables
                 $response_array['status'] = 'Success';
-                session_save_path('/home/campus/li2384/www//tmp');
+                session_save_path('/home/campus/li2384/www/tmp');
                 session_start();
                 $_SESSION['userID'] = $row['User_ID'];
                 $_SESSION['distance'] = $row['Distance'];
+                
+                // If remember me set, generate new login token
+                if($_POST['remember'])
+                {
+                    $token = bin2hex(mcrypt_create_iv(32));
+                    $tokenQuery = mysqli_prepare($con, "INSERT INTO Login_Tokens(User_ID, Token_Hash, Expiration_Date) VALUES (?, ?, ADDDATE(NOW(), 30))");
+                    mysqli_stmt_bind_param($tokenQuery, "is", $row['User_ID'], hash('sha256', $token));
+                    mysqli_stmt_execute($tokenQuery);
+                    mysqli_stmt_close($tokenQuery);
+                    setcookie('login', $row['User_ID'] . ',' . $token, time() + (60 * 60 * 24 * 30), "", "", true, true);
+                }
             }
             else
             {

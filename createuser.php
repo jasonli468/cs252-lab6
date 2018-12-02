@@ -17,7 +17,7 @@
         if(mysqli_stmt_affected_rows($query) === 1)
         {
             $response_array['status'] =  "Success";
-            session_save_path('/home/campus/li2384/www//tmp');
+            session_save_path('/home/campus/li2384/www/tmp');
             session_start();
             $_SESSION['userID'] = mysqli_insert_id($con);
         }
