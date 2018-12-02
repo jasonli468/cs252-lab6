@@ -1,9 +1,10 @@
-var passwordValid = false;
-var emailValid = false;
-var password = '';
-var passwordConfirm = '';
-var email = '';
-var emailConfirm = '';
+let passwordValid = false;
+let emailValid = false;
+let password = '';
+let passwordConfirm = '';
+let email = '';
+let emailConfirm = '';
+let sending = false;
 
 $(document).ready(function(){
     // Lots of if statements for error checking
@@ -168,8 +169,9 @@ $(document).ready(function(){
     })
     
     $('#signUpForm').submit(function(){
-        if(emailValid && passwordValid)
+        if(emailValid && passwordValid && !sending)
         {
+            sending = true;
             $('#statusMessage').html('Loading...');
             $('#statusMessage').attr('class', '');
             
@@ -185,6 +187,7 @@ $(document).ready(function(){
                     {
                         $('#statusMessage').html(data.status);
                         $('#statusMessage').attr('class', 'error');
+                        sending = false;
                     }
                 });
             }
