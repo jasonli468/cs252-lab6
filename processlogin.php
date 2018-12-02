@@ -4,9 +4,8 @@
 
     if(isset($email) && isset($password))
     {
+        // Connect to the database and attempt to get information for the selected email
         include 'dbconnect.php';
-        
-        // Get the information for the given email
         $query = mysqli_prepare($con, "SELECT * FROM Users WHERE Email=?");
         mysqli_stmt_bind_param($query, "s", $email);
         mysqli_stmt_execute($query);
@@ -37,6 +36,8 @@
         {
             $response_array['status'] = "Error: Email does not exist";
         }
+        
+        // Free resources
         mysqli_free_result($result);
         mysqli_stmt_close($query);
         mysqli_close($con);
@@ -44,6 +45,7 @@
     else
         $response_array['status'] = 'Error - Email or Password empty';
 
+    // Return result
     header('Content-type: application/json');
     echo json_encode($response_array);
 ?>

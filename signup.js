@@ -6,6 +6,7 @@ var email = '';
 var emailConfirm = '';
 
 $(document).ready(function(){
+    // Lots of if statements for error checking
     $('#passwordInput').on('input', function(){
         passwordValid = false;
         password = $('#passwordInput').val();
@@ -13,9 +14,11 @@ $(document).ready(function(){
         {
             if(password.length >= 6)
             {
+                // Check for any of the following characters: [ ] ! * \ ( )
                 let invalidPasswordRegex = /[\[\]!\s*'\(\)]/;
                 if(!invalidPasswordRegex.test(password))
                 {
+                    // Check for any non-alphanumeric character (aka any special character)
                     let alphanumericRegex = /^[A-Za-z0-9]*$/;
                     if(!alphanumericRegex.test(password) || password.length > 10)
                     {
@@ -40,30 +43,26 @@ $(document).ready(function(){
                 $('#passwordMessage').html('Password must be at least 6 characters long')
                 $('#passwordMessage').attr('class', 'error');
             }
+
+            if(passwordValid && password === passwordConfirm)
+            {
+                $('#passwordConfirmMessage').html('Passwords match')
+                $('#passwordConfirmMessage').attr('class', 'success');
+            }
+            else if(passwordConfirm)
+            {
+                $('#passwordConfirmMessage').html('Passwords do not match')
+                $('#passwordConfirmMessage').attr('class', 'error');
+            }
+            else
+            {
+                $('#passwordConfirmMessage').html('<br/>')
+            }
         }
         else
         {
             $('#passwordMessage').html('Password cannot be empty')
             $('#passwordMessage').attr('class', 'error');
-        }
-    })
-
-    $('#passwordInput').on('input',  function(){
-        password = $('#passwordInput').val();
-        passwordConfirm = $('#passwordConfirmInput').val();
-        if(password && passwordValid && password === passwordConfirm)
-        {
-            $('#passwordConfirmMessage').html('Passwords match')
-            $('#passwordConfirmMessage').attr('class', 'success');
-        }
-        else if(passwordConfirm)
-        {
-            $('#passwordConfirmMessage').html('Passwords do not match')
-            $('#passwordConfirmMessage').attr('class', 'error');
-        }
-        else
-        {
-            $('#passwordConfirmMessage').html('<br/>')
         }
     })
     $('#passwordConfirmInput').on('input', function(){
@@ -85,12 +84,14 @@ $(document).ready(function(){
         }
     })
 
+    // Lots of if statements for error checking
     $('#emailInput').on('input', function(){
         emailValid = false;
         email = $.trim($('#emailInput').val());
         $('#emailInput').val(email);
         if(email)
         {
+            // Check if its in the form {string}@{string}.{string lengt 2-4} with appropriate characters
             let emailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
             if(emailRegex.test(email))
             {
@@ -125,8 +126,8 @@ $(document).ready(function(){
                 $('#emailMessage').attr('class', 'error');
             }
 
-            let emailConfirm = $('#emailConfirmInput').val();
-            if(email && emailValid && email === emailConfirm)
+            let emailConfirm = $.trim($('#emailConfirmInput').val());
+            if(emailValid && email === emailConfirm)
             {
                 $('#emailConfirmMessage').html('Emails match')
                 $('#emailConfirmMessage').attr('class', 'success');
@@ -147,10 +148,9 @@ $(document).ready(function(){
             $('#emailMessage').attr('class', 'error');
         }
     })      
-
     $('#emailConfirmInput').on('input', function(){
         email = $.trim($('#emailInput').val());
-        emailConfirm = $('#emailConfirmInput').val();
+        emailConfirm = $.trim($('#emailConfirmInput').val());
         if(email && emailValid && email === emailConfirm)
         {
             $('#emailConfirmMessage').html('Emails match')
@@ -175,6 +175,7 @@ $(document).ready(function(){
             
             if(password === passwordConfirm && email === emailConfirm)
             {
+                // Send the password and email to be processed and update the page based on the result, encodeURIComponent ensures special characters are passed properly
                 $.post("createuser.php", 'email=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(password), function(data){
                     if(data.status === "Success")
                     {
@@ -198,6 +199,8 @@ $(document).ready(function(){
                 $('#statusMessage').attr('class', 'error');
             }
         }
+
+        // Return false so the page doesn't refresh
         return false;
     })
 })
