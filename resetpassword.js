@@ -96,7 +96,7 @@ $(document).ready(function(){
             $('#statusMessage').attr('class', '');
 
             // encodeURIComponent ensures special characters are processed properly
-            $.post("processresetpassword.php", 'email=' + encodeURIComponent(email) + '&token=' + token + '&password=' + encodeURIComponent(password) + '&salt=' + salt, function(data){
+            $.post("api/processresetpassword.php", 'email=' + encodeURIComponent(email) + '&token=' + token + '&password=' + encodeURIComponent(password) + '&salt=' + salt, function(data){
                 if(data.status = "Success")
                 {
                     window.location.href = "login.php";

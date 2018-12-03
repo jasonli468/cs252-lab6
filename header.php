@@ -5,6 +5,7 @@
         <nav>
             <a href="index.php">Home</a>
             <?php
+                // Assume sesion already started by the calling file
                 if($_SESSION['userID'])
                 {
                     echo "<a href='managelocations.php'>Locations</a>

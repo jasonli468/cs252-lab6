@@ -100,7 +100,7 @@ $(document).ready(function(){
                 $('#emailMessage').html('Checking availability...');
                 $('#emailMessage').attr('class', '');
 
-                $.get("checkemail.php", 'email=' + email, function(data){
+                $.get("api/checkemail.php", 'email=' + email, function(data){
                     if(data.status === "Success")
                     {
                         if(data.existingEmail === 0)
@@ -178,7 +178,7 @@ $(document).ready(function(){
             if(password === passwordConfirm && email === emailConfirm)
             {
                 // Send the password and email to be processed and update the page based on the result, encodeURIComponent ensures special characters are passed properly
-                $.post("createuser.php", 'email=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(password), function(data){
+                $.post("api/createuser.php", 'email=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(password), function(data){
                     if(data.status === "Success")
                     {
                         window.location.href = "index.php";
