@@ -14,7 +14,7 @@ $(document).ready(function(){
                 sending = true;
 
                 // Send the email to be processed and update the page accordingly. encodeURIComponent ensures special characters are sent correctly
-                $.post("processforgotpassword.php", 'email=' + encodeURIComponent(email), function(data){
+                $.post("api/forgotpassword.php", 'email=' + encodeURIComponent(email), function(data){
                     if(data.status === "Success")
                     {
                         $('#statusMessage').html('An email has been sent with instructions to reset your password');
