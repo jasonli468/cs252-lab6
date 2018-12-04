@@ -57,6 +57,13 @@ function initSearchMap(){
         circle.setCenter(loc);
         floatCoords = false;
     })
+    circle.addListener('click', function(event){
+        loc = event.latLng;
+        searchMap.setCenter(loc);
+        searchMarker.setPosition(loc);
+        circle.setCenter(loc);
+        floatCoords = false;
+    })
 }
 
 function initPlaceMap(){
@@ -72,7 +79,22 @@ function initPlaceMap(){
         map: placeMap
     });
 }
-
+function updatePlaceMap(){
+    let mapOffset = {lat: place.geometry.location.lat, lng: place.geometry.location.lng - .011};
+    placeMap.setCenter(mapOffset);
+    placeMarker.setPosition(place.geometry.location);
+}
+function updatePlaceDetails(){
+    $('#placeImg').attr('src', '');
+    let priceRepresentation = place.price_level > 0 ? '$'.repeat(place.price_level) : 'Not available';
+    place.opening_hours.open_now ? $('#placeName').html(place.name) : $('#placeName').html(place.name + " (CLOSED NOW)");
+    $('#placeDetails').html(place.vicinity + '<br>' + place.rating + '<br>' + priceRepresentation);
+    $('#place').attr('class', '');
+    if(place.photos.length > 0)
+    {
+        $('#placeImg').attr('src', 'api/getpicture.php?reference=' + place.photos[0].photo_reference);
+    }
+}
 // Get and display a random restaurant within the search radius
 function getPlace(){
     let stringLoc = floatCoords ? loc.lat + ',' + loc.lng : loc.lat() + ',' + loc.lng();
@@ -116,26 +138,30 @@ function getPlace(){
                     places = data.results;
                 }
 
-                // Pick a random place from the list of places
-                let i = Math.floor(Math.random() * places.length);
-                shownPlaces.push(i);
-                place = places[i];
-                if(shownPlaces.length === places.length)
-                    $('#showAnother').attr('class', 'hidden');
-                $('#message').html('Recommended Place:');
-                if(placeMap === null)
-                    initPlaceMap();
-                let priceRepresentation = place.price_level > 0 ? '$'.repeat(place.price_level) : 'Not available';
-                place.opening_hours.open_now ? $('#placeName').html(place.name) : $('#placeName').html(place.name + " (CLOSED NOW)");
-                $('#placeDetails').html(place.vicinity + '<br>' + place.rating + '<br>' + priceRepresentation);
-                $('#place').attr('class', '');
-                if(place.photos.length > 0)
+                if(places.length > 0)
                 {
-                    $('#placeImg').attr('src', 'api/getpicture.php?reference=' + place.photos[0].photo_reference);
+                    // Pick a random place from the list of places
+                    let i = Math.floor(Math.random() * places.length);
+                    shownPlaces.push(i);
+                    place = places[i];
+                    if(shownPlaces.length === places.length)
+                        $('#showAnother').attr('class', 'hidden');
+                    else
+                        $('#showAnother').attr('class', 'rightButton');
+                    $('#message').html('Recommended Place:');
+                    if(placeMap === null)
+                        initPlaceMap();
+                    else
+                        updatePlaceMap();
+                    updatePlaceDetails();
+                    console.log(place);
                 }
-                $('#showAnother').attr('class', '');
+                else
+                {
+                    $('#message').html("ERROR: No results that aren't blacklisted");
+                    $('#place').attr('class', 'hidden');
+                }
                 $('#back').attr('class', '');
-                console.log(place);
             })
         }
         else
@@ -216,6 +242,7 @@ $(document).ready(function(){
         $('#filters').attr('class', '');
         $('#place').attr('class', 'hidden');
         $('#back').attr('class', 'hidden');
+        places = [];
     })
 
     $('#showAnother').click(function(){
@@ -225,14 +252,26 @@ $(document).ready(function(){
             i = Math.floor(Math.random() * places.length);
         }
         shownPlaces.push(i);
-        place = places[i];    
-        let mapOffset = {lat: place.geometry.location.lat, lng: place.geometry.location.lng - .011};
-        placeMap.setCenter(mapOffset);
-        placeMarker.setPosition(place.geometry.location);
-        let priceRepresentation = place.price_level > 0 ? '$'.repeat(place.price_level) : 'Not available';
-        place.opening_hours.open_now ? $('#placeName').html(place.name) : $('#placeName').html(place.name + " (CLOSED NOW)");
-        $('#placeDetails').html(place.vicinity + '<br>' + place.rating + '<br>' + priceRepresentation);
+        place = places[i];
+        updatePlaceMap();
+        updatePlaceDetails();
         if(shownPlaces.length === places.length)
             $('#showAnother').attr('class', 'hidden');
+    })
+
+    $('#blacklist').click(function(){
+        // Add the place to the blacklist and then show another place. encodeURIComponent ensures the name gets passed properly if there are special characters in it
+        $.post('api/addtoblacklist.php', 'placeID=' + place.place_id + '&placeName=' + encodeURIComponent(place.name), function(){
+
+        })
+        if(shownPlaces.length < places.length)
+        {
+            $('#showAnother').click();
+        }
+        else
+        {
+            $('#message').html("ERROR: No results that aren't blacklisted");
+            $('#place').attr('class', 'hidden');
+        }
     })
 });

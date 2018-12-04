@@ -7,7 +7,7 @@
     {
         // Get list of place IDs from DB. Sort them in order to allow binary search later for faster searching through list
         include 'dbconnect.php';
-        $query = mysqli_prepare($con, "SELECT Place_ID FROM Ignore_List WHERE User_ID = ? ORDER BY Place_ID ASC");
+        $query = mysqli_prepare($con, "SELECT Place_ID FROM Blacklist WHERE User_ID = ? ORDER BY Place_ID ASC");
         mysqli_stmt_bind_param($query, "i", $_SESSION['userID']);
         mysqli_stmt_execute($query);
         $result = mysqli_stmt_get_result($query);

@@ -1,4 +1,11 @@
 <?php
+    // Ensure the user is connectiong through HTTPS, otherwise redirect and kill this connection
+    if($_SERVER["HTTPS"] != "on")
+    {
+        header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+        exit();
+    }
+
     session_save_path('/home/campus/li2384/www/tmp');
     session_start();
     // If a login token cookie is found and the user is not already logged in, try to log in with the cookie
@@ -97,7 +104,8 @@
         <input type='submit' value='Search'>
     </form>
     <div id='place' class='hidden'>
-        <input type='button' value='Show Another Result' id='showAnother'>
+        <?php if(isset($_SESSION['userID'])) echo "<input type='button' value='Blacklist Restaurant' class='rightButton' id='blacklist' title='Ignore restaurant in future search results'>" ?>
+        <input type='button' class='rightButton' value='Show Another Result' id='showAnother'>
         <div id='placeMap'></div>
         <div class='placeOverlay'>
             <h2 id='placeName'></h2>
