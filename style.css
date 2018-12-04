@@ -63,7 +63,7 @@ input:not([type=checkbox]){
     box-sizing: border-box;
 }
 
-input[type=submit]{
+input[type=submit], input[type=button]{
     background-color: #131f28;
     color: white;
 }
@@ -93,7 +93,26 @@ h2{
 }
 
 .hidden{
-	display:none;
+	display:none !important;
+}
+
+#priceSlider label {
+    position: absolute;
+    width: 20px;
+    margin-left: -10px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.dropdownContainer{
+	float:left;
+	width: 20%;
+}
+.sliderContainer{
+	padding-right: 30px;
+	float:right;
+	width:25%;
+	margin-bottom: 25px;
 }
 
 #searchMap, #placeMap{
@@ -107,10 +126,9 @@ h2{
 .placeOverlay{
 	color: #131f28;
 	padding: 30px;
-	height: 448px;
-	width: 500px;
+	height: 476px;
+	width: auto;
 	background-color: white;
-	opacity:0.75;
 	position:absolute;
 	top: 59px;
 	left: 10px;
@@ -127,9 +145,11 @@ h2{
 	font-size:18px;
 	float:left;
 }
+#placeImgDiv{
+	clear:both;
+}
 #placeImg{
 	margin-top: 10px;
 	clear:both;
-	width: 440px;
-	height: 245px;
+	height: 272px;
 }

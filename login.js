@@ -14,7 +14,7 @@ $(document).ready(function(){
         {
             sending = true;
 
-            $.post("api/processlogin.php", 'password=' + encodeURIComponent(password) + '&email=' + encodeURIComponent(email) + '&remember=' + $('#remember').is(':checked'), function(data){
+            $.post("api/login.php", 'password=' + encodeURIComponent(password) + '&email=' + encodeURIComponent(email) + '&remember=' + $('#remember').is(':checked'), function(data){
                 if(data.status === "Success")
                 {
                     window.location.href = "index.php";

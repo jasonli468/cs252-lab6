@@ -1,6 +1,6 @@
 let places = [];
-let minPrice = 0;
-let maxPrice = 0;
+let minPrice = 1;
+let maxPrice = 4;
 let distance = 0;
 let searchMap = null;
 let searchMarker = null;
@@ -9,6 +9,7 @@ let placeMap = null;
 let placeMarker = null;
 let place = null;
 let loc = null;
+let originalCoord = true;
 
 // Functions to get coordinates of  the user
 function geolocationPosition(position){
@@ -53,6 +54,7 @@ function initSearchMap(){
         searchMap.setCenter(loc);
         searchMarker.setPosition(loc);
         circle.setCenter(loc);
+        originalCoord = false;
     })
 }
 
@@ -63,7 +65,7 @@ function initPlaceMap(){
         center: mapOffset,
         zoom:15
     });
-    marker = new google.maps.Marker({
+    placeMarker = new google.maps.Marker({
         position: place.geometry.location,
         animation: google.maps.Animation.DROP,
         map: placeMap
@@ -72,9 +74,9 @@ function initPlaceMap(){
 
 // Get and display a random restaurant within the search radius
 function getPlace(){
-    stringLoc = loc.lat + ',' + loc.lng;
+    let stringLoc = originalCoord ? loc.lat + ',' + loc.lng : loc.lat() + ',' + loc.lng();
     // Call Google Map's Nearby Places API to get a list of nearby restaurants. Do initial call through PHP rather than through JS directly to protect API key
-    $.get('api/nearbysearch.php', 'location=' + stringLoc + '&radius=' + distance, function(data){
+    $.get('api/nearbysearch.php', 'location=' + stringLoc + '&radius=' + distance + '&minPrice=' + minPrice + '&maxPrice=' + maxPrice + '&open=' + $('#open').prop('checked'), function(data){
         console.log(data);
         if(data.status === "OK")
         {
@@ -114,20 +116,27 @@ function getPlace(){
                 }
 
                 // Pick a random place from the list of places
+                console.log(Math.floor(Math.random() * places.length));
                 place = places[Math.floor(Math.random() * places.length)];
                 $('#message').html('Recommended Place:');
                 if(placeMap === null)
                     initPlaceMap();
-                let priceRepresentation = '$'.repeat(place.price_level);
-                $('#placeName').html(place.name);
+                let priceRepresentation = place.price_level > 0 ? '$'.repeat(place.price_level) : 'Not available';
+                place.opening_hours.open_now ? $('#placeName').html(place.name) : $('#placeName').html(place.name + " (CLOSED NOW)");
                 $('#placeDetails').html(place.vicinity + '<br>' + place.rating + '<br>' + priceRepresentation);
                 $('#place').attr('class', '');
+                if(place.photos.length > 0)
+                {
+                    $('#placeImg').attr('src', 'api/getpicture.php?reference=' + place.photos[0].photo_reference);
+                }
+                $('#back').attr('class', '');
                 console.log(place);
             })
         }
         else
         {
             $('#message').html('ERROR: ' + data.status);
+            $('#back').attr('class', '');
         }
     })
 }
@@ -147,17 +156,23 @@ $(document).ready(function(){
         ipSearch();
     }
 
+    // Generate the price slider
     $('#priceSlider').slider({
         range: true,
-        min: 0,
+        min: 1,
         max: 4,
         step: 1,
-        values: [0, 4],
+        values: [1, 4],
         change: function(event, ui){
-            min = ui.values[0];
-            max = ui.values[1];
+            minPrice = ui.values[0];
+            maxPrice = ui.values[1];
         }
     })
+    // Generate the price slider labels
+    for (let i = 0; i <= 3; i++) {
+        let label = $('<label>'+'$'.repeat(i + 1)+'</label>').css('left',(i/3*97)+'%');
+        $("#priceSlider").append(label);
+    }
 
     // Whenever the distance changes, change the zoom of the map and radius of the circle accordingly
     $('#distance').on('change', function(){
@@ -188,5 +203,12 @@ $(document).ready(function(){
         $('#message').html('Loading...');
         getPlace();
         return false;
+    })
+
+    $('#back').click(function(){
+        $('#message').html('Select your location, choose your options, and hit Search to get a random restaurant to eat at!');
+        $('#filters').attr('class', '');
+        $('#place').attr('class', 'hidden');
+        $('#back').attr('class', 'hidden');
     })
 });
