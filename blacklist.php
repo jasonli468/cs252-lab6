@@ -1,7 +1,7 @@
 <?php
+    // If the user is not logged in, redirect to login page
     session_save_path('/home/campus/li2384/www/tmp');
     session_start();
-
     if(!isset($_SESSION['userID']))
     {
         header("Location: login.php");

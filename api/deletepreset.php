@@ -1,24 +1,24 @@
 <?php
-    // Remove a place from the blacklist of the user currently signed in
+    // Remove a preset of the user currently signed in
     session_save_path('/home/campus/li2384/www/tmp');
     session_start();
     $userID = $_SESSION['userID'];
-    $placeID = $_POST['placeID'];
+    $name = $_POST['name'];
 
-    if(isset($userID) && isset($placeID))
+    if(isset($userID) && isset($name))
     {
-        // Connect to the database and remove the place from the user's blacklist
+        // Connect to the database and delete the preset
         include 'dbconnect.php';
-        $query = mysqli_prepare($con, "DELETE FROM Blacklist WHERE User_ID = ? AND Place_ID = ?");
-        mysqli_stmt_bind_param($query, "is", $userID, $placeID);
+        $query = mysqli_prepare($con, "DELETE FROM Preset WHERE User_ID = ? AND Name = ?");
+        mysqli_stmt_bind_param($query, "is", $userID, $name);
         mysqli_stmt_execute($query);
 
-        // If there is an affected row, that means the place was deleted successfuly
+        // If there is an affected row, that means the preset was deleted successfuly
         if(mysqli_stmt_affected_rows($query) === 1)
         {
             $response_array['status'] =  "Success";
         }
-        // If the place wasn't deleted, return error
+        // If the preset wasn't deleted, return error
         else
         {
             $response_array['status'] = "Error: " . mysqli_stmt_error($query);

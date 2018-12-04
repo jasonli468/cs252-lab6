@@ -10,7 +10,7 @@
                 // Assume sesion already started by the calling file
                 if($_SESSION['userID'])
                 {
-                    echo "<a href='managelocations.php'>Locations</a>
+                    echo "<a href='presets.php'>Presets</a>
                         <a href='blacklist.php'>Blacklist</a>
                         <a href='signout.php'>Sign Out</a>";
                 }
