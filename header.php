@@ -1,3 +1,5 @@
+<!-- Taken from https://tutorialzine.com/2015/02/freebie-7-responsive-header-templates -->
+
 <header class="header-basic">
 <div class="container">
     <div class="header-limiter">
