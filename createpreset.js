@@ -120,37 +120,40 @@ $(document).ready(function(){
     })
         
     $('#filters').submit(function(){
-        if(!processing && $('#name').val())
+        if(!processing)
         {
-            let invalidNameRegex = /[\[\]!\s*'\(\)]/;
-            if(!invalidNameRegex.test($('#name').val()))
+            if($('#name').val())
             {
-                processing = true;    
-                $('#submit').val('Processing...');
-                $('#submit').prop('disabled', true);
+                let invalidNameRegex = /[\[\]!\s*'\(\)]/;
+                if(!invalidNameRegex.test($('#name').val()))
+                {
+                    processing = true;    
+                    $('#submit').val('Processing...');
+                    $('#submit').prop('disabled', true);
 
-                let lat = floatCoords ? loc.lat : loc.lat();
-                let lng = floatCoords ? loc.lng : loc.lng();
-                $.post('api/addpreset.php', 'lat=' + lat + '&lng=' + lng + '&radius=' + distance + '&minPrice=' + minPrice + '&maxPrice=' + maxPrice + '&open=' + 
-                    $('#open').prop('checked') + '&name=' + encodeURIComponent($('#name').val()), function(data){
-                    if(data.status === "Success")
-                    {
-                        window.location.href = "presets.php";
-                    }
-                    else
-                    {
-                        $('#submit').val('ERROR: Name already being used');
-                        $('#submit').prop('disabled', false);
-                        processing = false;
-                    }
-                })
+                    let lat = floatCoords ? loc.lat : loc.lat();
+                    let lng = floatCoords ? loc.lng : loc.lng();
+                    $.post('api/addpreset.php', 'lat=' + lat + '&lng=' + lng + '&radius=' + distance + '&minPrice=' + minPrice + '&maxPrice=' + maxPrice + '&open=' + 
+                        $('#open').prop('checked') + '&name=' + encodeURIComponent($('#name').val()), function(data){
+                        if(data.status === "Success")
+                        {
+                            window.location.href = "presets.php";
+                        }
+                        else
+                        {
+                            $('#submit').val('ERROR: Name already being used');
+                            $('#submit').prop('disabled', false);
+                            processing = false;
+                        }
+                    })
+                }
+                else
+                    $('#submit').val("Name can't contain spaces or any of the following characters: [ ] ! * \ ( )");
             }
             else
-                $('#submit').val("Name can't contain spaces or any of the following characters: [ ] ! * \ ( )");
-        }
-        else
-        {
-            $('#submit').val('ERROR: Name cannot be empty');
+            {
+                $('#submit').val('ERROR: Name cannot be empty');
+            }
         }
         return false;
     })

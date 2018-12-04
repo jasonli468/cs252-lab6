@@ -16,8 +16,8 @@
         // Connect to the database and update the preset
         include 'dbconnect.php';
         $open = $open === 'true' ? 1 : 0;
-        $query = mysqli_prepare($con, "UPDATE Presets SET Latitude = ?, Longitude = ?, Distance = ?, Min_Price = ?, Max_Price = ?, Open = ?) WHERE User_ID = ? AND Nickname = ?");
-        mysqli_stmt_bind_param($query, "dddiii", $lat, $lng, $radius, $minPrice, $maxPrice, $open, $userID, $name);
+        $query = mysqli_prepare($con, "UPDATE Presets SET Latitude = ?, Longitude = ?, Distance = ?, Min_Price = ?, Max_Price = ?, Open = ? WHERE User_ID = ? AND Nickname = ?");
+        mysqli_stmt_bind_param($query, "dddiiiis", $lat, $lng, $radius, $minPrice, $maxPrice, $open, $userID, $name);
         mysqli_stmt_execute($query);
 
         // If there is an affected row, that means the preset was updated successfuly

@@ -58,7 +58,7 @@
         </div>
         <br/>
         <label><input type='checkbox' id='open' checked>Restaurants Open Now</label>
-        <input id='submit' type='submit' value='Search'>
+        <input id='submit' type='submit' value='Create Preset'>
     </form>
 </div>
 

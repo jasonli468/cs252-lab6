@@ -26,7 +26,7 @@
 
 <div class="container">
     <h3 class='left'>Your Presets:</h3>
-    <form action='editpreset.php'>
+    <form action='createpreset.php'>
         <input type='submit' class='rightButton' value='Add New Preset'>
     </form>
     <div class='clear'>
@@ -44,10 +44,10 @@
             {
                 do
                 {
-                    echo"<form class='clear' action='createpreset.php'>
+                    echo"<form class='clear' action='editpreset.php'>
                         <div class='bigLeft'>$row[Nickname]</div>
                         <input type='hidden' name='nickname' value='$row[Nickname]'>
-                        <input type='button' class='rightButton' value='Edit Preset'>
+                        <input type='submit' class='rightButton' value='Edit Preset'>
                     </form>";
                 } while($row = mysqli_fetch_assoc($result));
             }
