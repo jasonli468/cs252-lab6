@@ -9,7 +9,7 @@
     {
         // Connect to the database and delete the preset
         include 'dbconnect.php';
-        $query = mysqli_prepare($con, "DELETE FROM Preset WHERE User_ID = ? AND Name = ?");
+        $query = mysqli_prepare($con, "DELETE FROM Presets WHERE User_ID = ? AND Nickname = ?");
         mysqli_stmt_bind_param($query, "is", $userID, $name);
         mysqli_stmt_execute($query);
 

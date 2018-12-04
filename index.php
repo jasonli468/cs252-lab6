@@ -100,7 +100,45 @@
             <div id='priceSlider'></div> <br/>
         </div>
         <br/>
-        <label><input type='checkbox' id='open' checked>Restaurants Open Now</label>
+        <label><input type='checkbox' id='open' checked> Restaurants Open Now</label>
+        <?php
+            if(isset($_SESSION['userID']))
+            {
+                // Get list of presets from DB
+                include 'api/dbconnect.php';
+                $query = mysqli_prepare($con, "SELECT * FROM Presets WHERE User_ID = ? ORDER BY Nickname ASC");
+                mysqli_stmt_bind_param($query, "i", $_SESSION['userID']);
+                mysqli_stmt_execute($query);
+                $result = mysqli_stmt_get_result($query);
+                mysqli_stmt_free_result($query);
+
+                // If any are found, set response status to success and add them all to the response
+                if($row = mysqli_fetch_assoc($result))
+                {
+                    $presets = array();
+                    echo "<label class='marginLeft'>Preset: &nbsp</label><select id='preset'><option value=''>None</option>";
+                    do
+                    {
+                        $presets[] = $row;
+                        echo "<option value='$row[Nickname]'>$row[Nickname]</option>";
+                    } while($row = mysqli_fetch_assoc($result));
+                    echo "</select>";
+
+                    foreach($presets as $preset)
+                    {
+                        echo "<input type='hidden' id='$preset[Nickname]Lat' value='$preset[Latitude]'>
+                            <input type='hidden' id='$preset[Nickname]Lng' value='$preset[Longitude]'>
+                            <input type='hidden' id='$preset[Nickname]Dist' value='$preset[Distance]'>
+                            <input type='hidden' id='$preset[Nickname]MinPrice' value='$preset[Min_Price]'>
+                            <input type='hidden' id='$preset[Nickname]MaxPrice' value='$preset[Max_Price]'>
+                            <input type='hidden' id='$preset[Nickname]Open' value='$preset[Open]'>";
+                    }
+                }
+                mysqli_free_result($result);
+                mysqli_stmt_close($query);
+                mysqli_close($con);
+            }
+        ?>
         <input type='submit' value='Search'>
     </form>
     <div id='place' class='hidden'>

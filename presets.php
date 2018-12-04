@@ -17,7 +17,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="presets.js"></script>
 
-    <title>Blacklist - Hungry but Indicisive Boiler</title>
+    <title>Presets - Hungry but Indicisive Boiler</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="shortcut icon" type="image/png" href="favicon.ico"/>
 </head>
@@ -44,9 +44,10 @@
             {
                 do
                 {
-                    echo"<form class='clear' action='editpreset.php'>
+                    echo"<form class='clear' action='editpreset.php' id='$row[Nickname]'>
                         <div class='bigLeft'>$row[Nickname]</div>
                         <input type='hidden' name='nickname' value='$row[Nickname]'>
+                        <input type='button' class='rightButton' value='Delete Preset'>
                         <input type='submit' class='rightButton' value='Edit Preset'>
                     </form>";
                 } while($row = mysqli_fetch_assoc($result));

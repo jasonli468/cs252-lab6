@@ -25,7 +25,7 @@
         echo "<script async defer src='https://maps.googleapis.com/maps/api/js?key=$key'></script>";
     ?>
     
-    <title>New Preset - Hungry but Indicisive Boiler</title>
+    <title>Edit Preset - Hungry but Indicisive Boiler</title>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="shortcut icon" type="image/png" href="favicon.ico"/>

@@ -175,7 +175,6 @@ function getPlace(){
 $(document).ready(function(){
     // Get the distance selected for map initialization (could differ depending on what the user's setting is if they are logged in)
     distance = parseFloat($('#distance').find(":selected").val());
-
     // If the browser supports geolocation, request it, using that location if accepted or going off of IP for coordinates if denied
     if(navigator.geolocation)
     {
@@ -204,6 +203,43 @@ $(document).ready(function(){
         let label = $('<label>'+'$'.repeat(i + 1)+'</label>').css('left',(i/3*97)+'%');
         $("#priceSlider").append(label);
     }
+
+    $('#preset').on('change', function(){
+        let name = this.value;
+        
+        // Reset coordinates
+        floatCoords = true;
+        loc = {lat: parseFloat($('#' + name + 'Lat').val()), lng: parseFloat($('#' + name + 'Lng').val())};
+        searchMap.setCenter(loc);
+        searchMarker.setPosition(loc);
+        circle.setCenter(loc);
+
+        // Reset distance and map zoom
+        distance = parseFloat($('#' + name + 'Dist').val());
+        circle.setRadius(distance);
+        switch(distance)
+        {
+            case 804.672:
+                searchMap.setZoom(15);
+                break;
+            case 1609.344:
+                searchMap.setZoom(14);
+                break;
+            case 4032.36:
+                searchMap.setZoom(13);
+                break
+            case 8046.72:
+                searchMap.setZoom(12);
+                break;
+            case 16093.44:
+                searchMap.setZoom(11);
+                break;
+        }
+
+        // Open now checkbox and price slider
+        $('#open').prop('checked', $('#' + name + 'Open').val() === '1')
+        $('#priceSlider').slider('values', [parseInt($('#' + name + 'MinPrice').val()), parseInt($('#' + name + 'MaxPrice').val())])
+    })
 
     // Whenever the distance changes, change the zoom of the map and radius of the circle accordingly
     $('#distance').on('change', function(){
