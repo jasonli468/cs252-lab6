@@ -7,6 +7,7 @@ let searchMarker = null;
 let circle = null;
 let placeMap = null;
 let placeMarker = null;
+let place = null;
 let loc = null;
 
 // Functions to get coordinates of  the user
@@ -58,17 +59,18 @@ function initSearchMap(){
 function initPlaceMap(){
     // Initialize the map, marker, and circle with the default values
     placeMap = new google.maps.Map(document.getElementById("placeMap"), {
-        center: loc,
+        center: place.geometry.location,
         zoom:15
     });
     marker = new google.maps.Marker({
-        position: loc,
+        position: place.geometry.location,
         animation: google.maps.Animation.DROP,
         map: placeMap
     });
 }
 
-function searchLocations(){
+// Get and display a random restaurant within the search radius
+function getPlace(){
     stringLoc = loc.lat + ',' + loc.lng;
     // Call Google Map's Nearby Places API to get a list of nearby restaurants. Do initial call through PHP rather than through JS directly to protect API key
     $.get('api/nearbysearch.php', 'location=' + stringLoc + '&radius=' + distance, function(data){
@@ -111,8 +113,10 @@ function searchLocations(){
                 }
 
                 // Pick a random place from the list of places
-                let place = places[Math.floor(Math.random() * 20)];
+                place = places[Math.floor(Math.random() * places.length)];
                 $('#message').html('Recommended Place:');
+                if(placeMap === null)
+                    initPlaceMap();
                 $('#result').attr('class', '');
                 console.log(place);
             })
@@ -151,6 +155,7 @@ $(document).ready(function(){
         }
     })
 
+    // Whenever the distance changes, change the zoom of the map and radius of the circle accordingly
     $('#distance').on('change', function(){
         distance = parseFloat(this.value);
         circle.setRadius(distance);
@@ -177,7 +182,7 @@ $(document).ready(function(){
     $('#filters').submit(function(){
         $('#filters').attr('class', 'hidden');
         $('#message').html('Loading...');
-        searchLocations();
+        getPlace();
         return false;
     })
 });
