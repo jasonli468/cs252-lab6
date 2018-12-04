@@ -9,7 +9,7 @@ let placeMap = null;
 let placeMarker = null;
 let place = null;
 let loc = null;
-let originalCoord = true;
+let floatCoords = true;
 let shownPlaces = [];
 
 // Functions to get coordinates of  the user
@@ -55,7 +55,7 @@ function initSearchMap(){
         searchMap.setCenter(loc);
         searchMarker.setPosition(loc);
         circle.setCenter(loc);
-        originalCoord = false;
+        floatCoords = false;
     })
 }
 
@@ -75,7 +75,7 @@ function initPlaceMap(){
 
 // Get and display a random restaurant within the search radius
 function getPlace(){
-    let stringLoc = originalCoord ? loc.lat + ',' + loc.lng : loc.lat() + ',' + loc.lng();
+    let stringLoc = floatCoords ? loc.lat + ',' + loc.lng : loc.lat() + ',' + loc.lng();
     // Call Google Map's Nearby Places API to get a list of nearby restaurants. Do initial call through PHP rather than through JS directly to protect API key
     $.get('api/nearbysearch.php', 'location=' + stringLoc + '&radius=' + distance + '&minPrice=' + minPrice + '&maxPrice=' + maxPrice + '&open=' + $('#open').prop('checked'), function(data){
         console.log(data);
