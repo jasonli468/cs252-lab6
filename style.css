@@ -97,5 +97,39 @@ h2{
 }
 
 #searchMap, #placeMap{
-	height:575px;
+	height:566px;
+}
+
+#place{
+	position:relative;
+}
+
+.placeOverlay{
+	color: #131f28;
+	padding: 30px;
+	height: 448px;
+	width: 500px;
+	background-color: white;
+	opacity:0.75;
+	position:absolute;
+	top: 59px;
+	left: 10px;
+	z-index: 2;
+}
+
+#placeLabels{
+	font-weight:500;
+	font-size:18px;
+	float:left;
+	width: 80px;
+}
+#placeDetails{
+	font-size:18px;
+	float:left;
+}
+#placeImg{
+	margin-top: 10px;
+	clear:both;
+	width: 440px;
+	height: 245px;
 }

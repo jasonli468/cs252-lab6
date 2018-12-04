@@ -84,14 +84,28 @@
             <option value='1609.344'>1 mile (1.2 km)</option>
             <option value='4032.36'>2.5 miles (4 km)</option>
             <option value='8046.72'>5 miles (8 km)</option>
-            <option value='16093.44'>10 miles (16 km)<option>
+            <option value='16093.44'>10 miles (16 km)</option>
         </select> <br/>
         <label>Price Range: </label>
         <div id='priceSlider'></div> <br/>
         <input type='submit' value='Search'>
     </form>
-    <div id='result'>
+    <div id='place' class='hidden'>
         <div id='placeMap'></div>
+        <div class='placeOverlay'>
+            <h2 id='placeName'>Five Guys Burgers and Fries</h2>
+            <div id='placeLabels'>
+                Address: <br/>
+                Rating: <br/>
+                Price:
+            </div>
+            <div id='placeDetails'>
+                <br/>
+                <br/>
+                
+            </div>
+            <img id='placeImg'>
+        </div>
     </div>
 </div>
 

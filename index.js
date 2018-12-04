@@ -57,9 +57,10 @@ function initSearchMap(){
 }
 
 function initPlaceMap(){
-    // Initialize the map, marker, and circle with the default values
+    // Initialize the map, marker, and circle with the default values. Offset the map to make room for the place information overlay.
+    let mapOffset = {lat: place.geometry.location.lat, lng: place.geometry.location.lng - .011};
     placeMap = new google.maps.Map(document.getElementById("placeMap"), {
-        center: place.geometry.location,
+        center: mapOffset,
         zoom:15
     });
     marker = new google.maps.Marker({
@@ -117,7 +118,10 @@ function getPlace(){
                 $('#message').html('Recommended Place:');
                 if(placeMap === null)
                     initPlaceMap();
-                $('#result').attr('class', '');
+                let priceRepresentation = '$'.repeat(place.price_level);
+                $('#placeName').html(place.name);
+                $('#placeDetails').html(place.vicinity + '<br>' + place.rating + '<br>' + priceRepresentation);
+                $('#place').attr('class', '');
                 console.log(place);
             })
         }
