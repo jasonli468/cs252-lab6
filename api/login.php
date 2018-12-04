@@ -23,7 +23,6 @@
                 session_save_path('/home/campus/li2384/www/tmp');
                 session_start();
                 $_SESSION['userID'] = $row['User_ID'];
-                $_SESSION['distance'] = $row['Distance'];
                 
                 // If remember me set, generate new login token
                 if($_POST['remember'])

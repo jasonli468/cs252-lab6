@@ -19,7 +19,6 @@
         {
             // Save user data to log in the user
             $_SESSION['userID'] = $row['User_ID'];
-            $_SESSION['distance'] = $row['Distance'];
 
             // Delete the old token
             $deleteQuery = mysqli_prepare($con, "DELETE FROM Login_Tokens WHERE User_ID = ? AND Token_Hash = ?");
@@ -79,6 +78,7 @@
     <form id='filters'>
         <div id='searchMap'></div>
         <div class='dropdownContainer'>
+            <br/>
             <label>Maximum Distance:&nbsp</label>
             <select id='distance'>
                 <option value='804.672'>0.5 miles (0.8 km)</option>
@@ -89,8 +89,8 @@
             </select> <br/>
         </div>
         <div class='sliderContainer'>
-        <label>Price Range: </label>
-        <div id='priceSlider'></div> <br/>
+            <label>Price Range: </label>
+            <div id='priceSlider'></div> <br/>
         </div>
         <br/>
         <label><input type='checkbox' id='open' checked>Restaurants Open Now</label>
@@ -100,7 +100,7 @@
         <input type='button' value='Show Another Result' id='showAnother'>
         <div id='placeMap'></div>
         <div class='placeOverlay'>
-            <h2 id='placeName'>Five Guys Burgers and Fries</h2>
+            <h2 id='placeName'></h2>
             <div id='placeLabels'>
                 Address: <br/>
                 Rating: <br/>

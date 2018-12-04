@@ -106,7 +106,7 @@ h2{
 
 .dropdownContainer{
 	float:left;
-	width: 20%;
+	margin-right: 50px;
 }
 .sliderContainer{
 	padding-right: 30px;
