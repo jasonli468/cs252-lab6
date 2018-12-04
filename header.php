@@ -10,7 +10,6 @@
                 {
                     echo "<a href='managelocations.php'>Locations</a>
                         <a href='blacklist.php'>Blacklist</a>
-                        <a href='account.php'>Account</a>
                         <a href='signout.php'>Sign Out</a>";
                 }
                 else

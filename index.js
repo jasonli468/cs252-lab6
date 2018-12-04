@@ -10,6 +10,7 @@ let placeMarker = null;
 let place = null;
 let loc = null;
 let originalCoord = true;
+let shownPlaces = [];
 
 // Functions to get coordinates of  the user
 function geolocationPosition(position){
@@ -116,8 +117,11 @@ function getPlace(){
                 }
 
                 // Pick a random place from the list of places
-                console.log(Math.floor(Math.random() * places.length));
-                place = places[Math.floor(Math.random() * places.length)];
+                let i = Math.floor(Math.random() * places.length);
+                shownPlaces.push(i);
+                place = places[i];
+                if(shownPlaces.length === places.length)
+                    $('#showAnother').attr('class', 'hidden');
                 $('#message').html('Recommended Place:');
                 if(placeMap === null)
                     initPlaceMap();
@@ -129,6 +133,7 @@ function getPlace(){
                 {
                     $('#placeImg').attr('src', 'api/getpicture.php?reference=' + place.photos[0].photo_reference);
                 }
+                $('#showAnother').attr('class', '');
                 $('#back').attr('class', '');
                 console.log(place);
             })
@@ -205,10 +210,29 @@ $(document).ready(function(){
         return false;
     })
 
+    // Go back to search screen from results screen
     $('#back').click(function(){
         $('#message').html('Select your location, choose your options, and hit Search to get a random restaurant to eat at!');
         $('#filters').attr('class', '');
         $('#place').attr('class', 'hidden');
         $('#back').attr('class', 'hidden');
+    })
+
+    $('#showAnother').click(function(){
+        let i = Math.floor(Math.random() * places.length);
+        while(shownPlaces.includes(i))
+        {
+            i = Math.floor(Math.random() * places.length);
+        }
+        shownPlaces.push(i);
+        place = places[i];    
+        let mapOffset = {lat: place.geometry.location.lat, lng: place.geometry.location.lng - .011};
+        placeMap.setCenter(mapOffset);
+        placeMarker.setPosition(place.geometry.location);
+        let priceRepresentation = place.price_level > 0 ? '$'.repeat(place.price_level) : 'Not available';
+        place.opening_hours.open_now ? $('#placeName').html(place.name) : $('#placeName').html(place.name + " (CLOSED NOW)");
+        $('#placeDetails').html(place.vicinity + '<br>' + place.rating + '<br>' + priceRepresentation);
+        if(shownPlaces.length === places.length)
+            $('#showAnother').attr('class', 'hidden');
     })
 });

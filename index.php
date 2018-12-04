@@ -75,7 +75,7 @@
 ?>
 <div class='container'>
     <input type='hidden' value="<?php echo $ip;?>" id='ip'>
-    <h4 id='message'>Select your location, choose your options, and hit Search to get a random restaurant to eat at!</h4>
+    <h4 id='message' class='left'>Select your location, choose your options, and hit Search to get a random restaurant to eat at!</h4>
     <form id='filters'>
         <div id='searchMap'></div>
         <div class='dropdownContainer'>
@@ -97,7 +97,7 @@
         <input type='submit' value='Search'>
     </form>
     <div id='place' class='hidden'>
-        <input class='hidden' type='button' value='Show Another Result' id='showAnother'>
+        <input type='button' value='Show Another Result' id='showAnother'>
         <div id='placeMap'></div>
         <div class='placeOverlay'>
             <h2 id='placeName'>Five Guys Burgers and Fries</h2>
