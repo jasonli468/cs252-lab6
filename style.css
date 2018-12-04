@@ -91,3 +91,11 @@ h2{
 .right{
     float: right;
 }
+
+.hidden{
+	display:none;
+}
+
+#searchMap, #placeMap{
+	height:575px;
+}

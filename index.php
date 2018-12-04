@@ -5,7 +5,7 @@
     if(isset($_COOKIE['login']) && !isset($_SESSION['userID']))
     {
         // Attemp to pull user data for the ID and token in the cookie
-        include 'dbconnect.php';
+        include 'api/dbconnect.php';
         $tokenArray = explode(',', $_COOKIE['login']);
         $tokenHash = hash('sha256', $tokenArray[1]);
         $userQuery = mysqli_prepare($con, "SELECT * FROM Login_Tokens NATURAL JOIN Users WHERE User_ID = ? AND Token_Hash = ? AND Expiration_Date > NOW()");
@@ -57,13 +57,15 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src='index.js'></script>
     <?php 
         include 'apikey.php';
-        echo "<script async defer src='https://maps.googleapis.com/maps/api/js?key=$key&callback=initMap'></script>";
+        echo "<script async defer src='https://maps.googleapis.com/maps/api/js?key=$key'></script>";
     ?>
     
     <title>Home - Hungry but Indicisive Boiler</title>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="shortcut icon" type="image/png" href="favicon.ico"/>
 </head>
@@ -72,8 +74,25 @@
     include 'header.php';
 ?>
 <div class='container'>
-    <?php echo gethostbyname(gethostname())?>
     <input type='hidden' value="<?php echo $ip;?>" id='ip'>
+    <h4 id='message'>Select your location on the map and options for your search to find a random restaurant to eat at!</h4>
+    <form id='filters'>
+        <div id='searchMap'></div>
+        <label>Maximum Distance:&nbsp</label>
+        <select id='distance'>
+            <option value='804.672'>0.5 miles (0.8 km)</option>
+            <option value='1609.344'>1 mile (1.2 km)</option>
+            <option value='4032.36'>2.5 miles (4 km)</option>
+            <option value='8046.72'>5 miles (8 km)</option>
+            <option value='16093.44'>10 miles (16 km)<option>
+        </select> <br/>
+        <label>Price Range: </label>
+        <div id='priceSlider'></div> <br/>
+        <input type='submit' value='Search'>
+    </form>
+    <div id='result'>
+        <div id='placeMap'></div>
+    </div>
 </div>
 
 
