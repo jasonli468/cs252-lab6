@@ -100,7 +100,6 @@ function getPlace(){
     let stringLoc = floatCoords ? loc.lat + ',' + loc.lng : loc.lat() + ',' + loc.lng();
     // Call Google Map's Nearby Places API to get a list of nearby restaurants. Do initial call through PHP rather than through JS directly to protect API key
     $.get('api/nearbysearch.php', 'location=' + stringLoc + '&radius=' + distance + '&minPrice=' + minPrice + '&maxPrice=' + maxPrice + '&open=' + $('#open').prop('checked'), function(data){
-        console.log(data);
         if(data.status === "OK")
         {
             // Get the list of restaurants the user has blacklisted, or nothing if they are not logged in
@@ -141,10 +140,11 @@ function getPlace(){
                 if(places.length > 0)
                 {
                     // Pick a random place from the list of places
+                    shownPlaces = [];
                     let i = Math.floor(Math.random() * places.length);
                     shownPlaces.push(i);
                     place = places[i];
-                    if(shownPlaces.length === places.length)
+                    if(shownPlaces.length >= places.length)
                         $('#showAnother').attr('class', 'hidden');
                     else
                         $('#showAnother').attr('class', 'rightButton');
@@ -154,7 +154,6 @@ function getPlace(){
                     else
                         updatePlaceMap();
                     updatePlaceDetails();
-                    console.log(place);
                 }
                 else
                 {
@@ -291,7 +290,7 @@ $(document).ready(function(){
         place = places[i];
         updatePlaceMap();
         updatePlaceDetails();
-        if(shownPlaces.length === places.length)
+        if(shownPlaces.length >= places.length)
             $('#showAnother').attr('class', 'hidden');
     })
 
