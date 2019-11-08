@@ -15,7 +15,7 @@
         $response_array['existingEmail'] = mysqli_stmt_num_rows($query);
 
         // Freeing resources
-        mysqli_stmt_free_result($query);
+        mysqli_free_result($query);
         mysqli_stmt_close($query);
         mysqli_close($con);
     }

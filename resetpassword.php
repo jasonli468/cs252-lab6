@@ -21,14 +21,15 @@
     
         if(isset($email) && isset($token))
         {
-            include 'dbconnect.php';
+            include 'api/dbconnect.php';
             $query = mysqli_prepare($con, "SELECT Salt FROM Users WHERE Email = ? AND Password_Reset_Token = ? AND Token_Expiration > NOW()");
             mysqli_stmt_bind_param($query, "ss", $email, $token);
             mysqli_stmt_execute($query);
-            $result = mysqli_stmt_get_result($query);
-            mysqli_stmt_free_result($query);
-            if(mysqli_num_rows($result) === 1)
+            mysqli_stmt_store_result($query);
+            if(mysqli_stmt_num_rows($query))
             {
+                mysqli_stmt_bind_result($query, $salt);
+                mysqli_stmt_fetch($query);
                 echo '
                     <form id="passwordResetForm">
                         <label>New Password:</label>
@@ -38,14 +39,14 @@
                         <input type="submit" value="Submit" class="submitButton"><span id="statusMessage"></span>
                         <input id="token" type="hidden" value=' . $token . ' hidden/>
                         <input id="email" type="hidden" value=' . $email . ' hidden/>
-                        <input id="salt" type="hidden" value=' . mysqli_fetch_assoc($result)['Salt'] . ' hidden/>
+                        <input id="salt" type="hidden" value=' . $salt . ' hidden/>
                     </form>';
             }
             else
             {
                 echo 'Token does not exist or has expired';
             }
-            mysqli_free_result($result);
+            mysqli_free_result($query);
             mysqli_stmt_close($query);
             mysqli_close($con);
         }

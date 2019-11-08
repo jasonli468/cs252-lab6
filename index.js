@@ -21,6 +21,7 @@ function geolocationPosition(position){
 function ipSearch(){
     // Get coordinates from a public API based on IP
     $.get('https://ipinfo.io/' + $('#ip').val() + '/json', '', function(position){
+        console.log(position);
         let splitLoc = position.loc.split(',');
         loc = {lat: parseFloat(splitLoc[0]), lng: parseFloat(splitLoc[1])};
         initSearchMap();
@@ -88,7 +89,7 @@ function updatePlaceDetails(){
     $('#placeImg').attr('src', '');
     let priceRepresentation = place.price_level > 0 ? '$'.repeat(place.price_level) : 'Not available';
     place.opening_hours.open_now ? $('#placeName').html(place.name) : $('#placeName').html(place.name + " (CLOSED NOW)");
-    $('#placeDetails').html(place.vicinity + '<br>' + place.rating + '<br>' + priceRepresentation);
+    $('#placeDetails').html(place.vicinity + '<br>' + place.rating.toFixed(1) + '<br>' + priceRepresentation);
     $('#place').attr('class', '');
     if(place.photos.length > 0)
     {
@@ -145,9 +146,15 @@ function getPlace(){
                     shownPlaces.push(i);
                     place = places[i];
                     if(shownPlaces.length >= places.length)
+                    {
                         $('#showAnother').attr('class', 'hidden');
+                        $('#showAnotherApology').attr('class', '');
+                    }
                     else
+                    {
                         $('#showAnother').attr('class', 'rightButton');
+                        $('#showAnotherApology').attr('class', 'hidden');
+                    }
                     $('#message').html('Recommended Place:');
                     if(placeMap === null)
                         initPlaceMap();
@@ -291,7 +298,10 @@ $(document).ready(function(){
         updatePlaceMap();
         updatePlaceDetails();
         if(shownPlaces.length >= places.length)
+        {
             $('#showAnother').attr('class', 'hidden');
+            $('#showAnotherApology').attr('class', '');
+        }
     })
 
     $('#blacklist').click(function(){

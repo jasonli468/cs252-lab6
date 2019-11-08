@@ -36,27 +36,27 @@
             $query = mysqli_prepare($con, "SELECT Nickname FROM Presets WHERE User_ID = ? ORDER BY Nickname ASC");
             mysqli_stmt_bind_param($query, "i", $_SESSION['userID']);
             mysqli_stmt_execute($query);
-            $result = mysqli_stmt_get_result($query);
-            mysqli_stmt_free_result($query);
+            mysqli_stmt_store_result($query);
+            mysqli_stmt_bind_result($query, $nickName);
 
             // If any are found, set response status to success and add them all to the response
-            if($row = mysqli_fetch_assoc($result))
+            if(mysqli_stmt_fetch($query))
             {
                 do
                 {
-                    echo"<form class='clear' action='editpreset.php' id='$row[Nickname]'>
-                        <div class='bigLeft'>$row[Nickname]</div>
-                        <input type='hidden' name='nickname' value='$row[Nickname]'>
+                    echo"<form class='clear' action='editpreset.php' id='$nickName'>
+                        <div class='bigLeft'>$nickName</div>
+                        <input type='hidden' name='nickname' value='$nickName'>
                         <input type='button' class='rightButton' value='Delete Preset'>
                         <input type='submit' class='rightButton' value='Edit Preset'>
                     </form>";
-                } while($row = mysqli_fetch_assoc($result));
+                } while(mysqli_stmt_fetch($query));
             }
             else
             {
                 echo "No presets. To add a new preset, click the button in the top right under the header";
             }
-            mysqli_free_result($result);
+            mysqli_free_result($query);
             mysqli_stmt_close($query);
             mysqli_close($con);
         ?>

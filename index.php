@@ -1,11 +1,10 @@
 <?php
     // Ensure the user is connectiong through HTTPS, otherwise redirect and kill this connection
-    if($_SERVER["HTTPS"] != "on")
+    if($_SERVER["HTTPS"] == "off")
     {
         header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
         exit();
     }
-
     session_save_path('/home/campus/li2384/www/tmp');
     session_start();
     // If a login token cookie is found and the user is not already logged in, try to log in with the cookie
@@ -15,17 +14,17 @@
         include 'api/dbconnect.php';
         $tokenArray = explode(',', $_COOKIE['login']);
         $tokenHash = hash('sha256', $tokenArray[1]);
-        $userQuery = mysqli_prepare($con, "SELECT * FROM Login_Tokens NATURAL JOIN Users WHERE User_ID = ? AND Token_Hash = ? AND Expiration_Date > NOW()");
+        $userQuery = mysqli_prepare($con, "SELECT UserID FROM Login_Tokens NATURAL JOIN Users WHERE User_ID = ? AND Token_Hash = ? AND Expiration_Date > NOW()");
         mysqli_stmt_bind_param($userQuery, "is", $tokenArray[0], $tokenHash);
         mysqli_stmt_execute($userQuery);
-        $result = mysqli_stmt_get_result($userQuery);
-        mysqli_stmt_free_result($userQuery);
+        mysqli_stmt_store_result($query);
+        mysqli_stmt_bind_result($query, $userID);
 
         // If a user is found for this information, log in the user, delete the old token, and generate a new token. Refreshing tokens prevents access to user's accounts if their cookies are leaked
-        if($row = mysqli_fetch_assoc($result))
+        if(mysqli_stmt_fetch($query))
         {
             // Save user data to log in the user
-            $_SESSION['userID'] = $row['User_ID'];
+            $_SESSION['userID'] = $userID;
 
             // Delete the old token
             $deleteQuery = mysqli_prepare($con, "DELETE FROM Login_Tokens WHERE User_ID = ? AND Token_Hash = ?");
@@ -36,10 +35,10 @@
             // Create a new token and override teh cookie
             $newToken = bin2hex(mcrypt_create_iv(32));
             $tokenQuery = mysqli_prepare($con, "INSERT INTO Login_Tokens(User_ID, Token_Hash, Expiration_Date) VALUES (?, ?, ADDDATE(NOW(), 30))");
-            mysqli_stmt_bind_param($tokenQuery, "is", $row['User_ID'], hash('sha256', $newToken));
+            mysqli_stmt_bind_param($tokenQuery, "is", $userID, hash('sha256', $newToken));
             mysqli_stmt_execute($tokenQuery);
             mysqli_stmt_close($tokenQuery);
-            setcookie('login', $row['User_ID'] . ',' . $newToken, time() + (60 * 60 * 24 * 30), "~li2384/cs252-lab6/", "", true, true);
+            setcookie('login', $userID . ',' . $newToken, time() + (60 * 60 * 24 * 30), "~li2384/cs252-lab6/", "", true, true);
         }
         // If no user found, assume hacking attempt with old token and delete all cookies for that user
         else
@@ -49,7 +48,7 @@
             mysqli_stmt_execute($deleteQuery);
             mysqli_stmt_close($deleteQuery);
         }
-        mysqli_free_result($result);
+        mysqli_free_result($query);
         mysqli_stmt_close($userQuery);
         mysqli_close($con);
     }
@@ -106,21 +105,27 @@
             {
                 // Get list of presets from DB
                 include 'api/dbconnect.php';
-                $query = mysqli_prepare($con, "SELECT * FROM Presets WHERE User_ID = ? ORDER BY Nickname ASC");
+                $query = mysqli_prepare($con, "SELECT Nickname, Latitude, Longitude, Distance, Min_Price, Max_Price, Open FROM Presets WHERE User_ID = ? ORDER BY Nickname ASC");
                 mysqli_stmt_bind_param($query, "i", $_SESSION['userID']);
                 mysqli_stmt_execute($query);
-                $result = mysqli_stmt_get_result($query);
-                mysqli_stmt_free_result($query);
+                mysqli_stmt_store_result($query);
+                mysqli_stmt_bind_result($query, $nickName, $lat, $long, $dist, $minPrice, $maxPrice, $open);
 
                 // If any are found, set response status to success and add them all to the response
-                if($row = mysqli_fetch_assoc($result))
+                if(mysqli_stmt_fetch($query))
                 {
                     $presets = array();
                     echo "<label class='marginLeft'>Preset: &nbsp</label><select id='preset'><option value=''>None</option>";
                     do
                     {
-                        $presets[] = $row;
-                        echo "<option value='$row[Nickname]'>$row[Nickname]</option>";
+                        $presets[] = array("Nickname" => $nickName,
+                                           "Latitude" => $lat,
+                                           "Longitude" => $long,
+                                           "Distance" => $dist,
+                                           "Min_Price" => $minPrice,
+                                           "Max_Price" => $maxPrice,
+                                           "Open" => $open);
+                        echo "<option value='$nickName'>$nickName</option>";
                     } while($row = mysqli_fetch_assoc($result));
                     echo "</select>";
 
@@ -134,7 +139,7 @@
                             <input type='hidden' id='$preset[Nickname]Open' value='$preset[Open]'>";
                     }
                 }
-                mysqli_free_result($result);
+                mysqli_free_result($query);
                 mysqli_stmt_close($query);
                 mysqli_close($con);
             }
@@ -144,6 +149,7 @@
     <div id='place' class='hidden'>
         <?php if(isset($_SESSION['userID'])) echo "<input type='button' value='Blacklist Restaurant' class='rightButton' id='blacklist' title='Ignore restaurant in future search results'>" ?>
         <input type='button' class='rightButton' value='Show Another Result' id='showAnother'>
+        <span style='float:right' class='hidden' id='showAnotherApology'>Google limits me to 20 results per search (or your filters are too restrictive), please search again!</span>
         <div id='placeMap'></div>
         <div class='placeOverlay'>
             <h2 id='placeName'></h2>

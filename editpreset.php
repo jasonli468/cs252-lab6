@@ -39,23 +39,23 @@
 <input type='hidden' value="<?php echo $ip;?>" id='ip'>
     <?php
         include 'api/dbconnect.php';
-        $query = mysqli_prepare($con, "SELECT * FROM Presets WHERE User_ID = ? AND Nickname = ?");
+        $query = mysqli_prepare($con, "SELECT Nickname, Latitude, Longitude, Distance, Min_Price, Max_Price, Open FROM Presets WHERE User_ID = ? AND Nickname = ?");
         mysqli_stmt_bind_param($query, "is", $_SESSION['userID'], $_GET['nickname']);
         mysqli_stmt_execute($query);
-        $result = mysqli_stmt_get_result($query);
-        mysqli_stmt_free_result($query);
-        
-        if($row = mysqli_fetch_assoc($result))
+        mysqli_stmt_store_result($query);
+        mysqli_stmt_bind_result($query, $nickName, $lat, $long, $distance, $minPrice, $maxPrice, $open);
+
+        if(mysqli_stmt_fetch($query))
         {
-            $checked = $row['Open'] ? 'checked' : '';
-            echo "<h4 id='message' class='left'>Edit Preset $row[Nickname]:</h4>
+            $checked = $open ? 'checked' : '';
+            echo "<h4 id='message' class='left'>Edit Preset $nickName:</h4>
                 <form id='filters'>
                     <div id='searchMap'></div>
                     <div class='dropdownContainer'>
                         <br/>
                         <label>Maximum Distance:&nbsp</label>
                         <select id='distance'>";
-            switch($row['Distance'])
+            switch($distance)
             {
                 case 804.672:
                     echo "<option value='804.672'>0.5 miles (0.8 km)</option>
@@ -96,8 +96,8 @@
             
             echo "</select> <br/>
                     </div>
-                    <input type='hidden' value='$row[Min_Price]' id='minPrice'>
-                    <input type='hidden' value='$row[Max_Price]' id='maxPrice'>
+                    <input type='hidden' value='$minPrice' id='minPrice'>
+                    <input type='hidden' value='$maxPrice' id='maxPrice'>
                     <div class='sliderContainer'>
                         <label>Price Range: </label>
                         <div id='priceSlider'></div> <br/>
@@ -105,15 +105,16 @@
                     <br/>
                     <label><input type='checkbox' id='open' $checked>Restaurants Open Now</label>
                     <input id='submit' type='submit' value='Update Preset'>
-                    <input type='hidden' value='$row[Latitude]' id='lat'>
-                    <input type='hidden' value='$row[Longitude]' id='lng'>
-                    <input type='hidden' value='$row[Nickname]' id='name'>
+                    <input type='hidden' value='$lat' id='lat'>
+                    <input type='hidden' value='$long' id='lng'>
+                    <input type='hidden' value='$nickName' id='name'>
                 </form>";
         }
         else
         {
             echo "ERROR: Preset not found.";
         }
+        mysqli_stmt_free_result($query);
     ?>
 </div>
 

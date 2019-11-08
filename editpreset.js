@@ -50,7 +50,7 @@ function initSearchMap(){
 $(document).ready(function(){
     // Get the distance selected for map initialization (could differ depending on what the user's setting is if they are logged in)
     distance = parseFloat($('#distance').find(":selected").val());
-    loc = {lat: parseFloat($('#lat').val()), lng: parseFloat($('#lng').val())}
+    loc = {lat: parseFloat($('#lat').val()), lng: parseFloat($('#lng').val())};
     initSearchMap();
     switch(distance)
     {

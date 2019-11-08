@@ -10,17 +10,17 @@
         $query = mysqli_prepare($con, "SELECT Place_ID FROM Blacklist WHERE User_ID = ? ORDER BY Place_ID ASC");
         mysqli_stmt_bind_param($query, "i", $_SESSION['userID']);
         mysqli_stmt_execute($query);
-        $result = mysqli_stmt_get_result($query);
-        mysqli_stmt_free_result($query);
+        mysqli_stmt_store_result($query);
+        mysqli_stmt_bind_result($query, $placeID);
 
         // If any are found, set response status to success and add them all to the response
-        if($row = mysqli_fetch_assoc($result))
+        if(mysqli_stmt_fetch($query))
         {
             $response_array['placeIDs'] = array();
             do
             {
-                $response_array['placeIDs'][] = $row['Place_ID'];
-            } while($row = mysqli_fetch_assoc($result));
+                $response_array['placeIDs'][] = $placeID;
+            } while(mysqli_stmt_fetch($query));
 
             $response_array['status'] = 'Success';
         }
@@ -28,7 +28,7 @@
         {
             $response_array['status'] = 'Empty';
         }
-        mysqli_free_result($result);
+        mysqli_free_result($query);
         mysqli_stmt_close($query);
         mysqli_close($con);
     }

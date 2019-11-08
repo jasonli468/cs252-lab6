@@ -32,25 +32,25 @@
         $query = mysqli_prepare($con, "SELECT Name, Place_ID FROM Blacklist WHERE User_ID = ? ORDER BY Name ASC");
         mysqli_stmt_bind_param($query, "i", $_SESSION['userID']);
         mysqli_stmt_execute($query);
-        $result = mysqli_stmt_get_result($query);
-        mysqli_stmt_free_result($query);
+        mysqli_stmt_store_result($query);
+        mysqli_stmt_bind_result($query, $placeName, $placeID);
 
         // If any are found, set response status to success and add them all to the response
-        if($row = mysqli_fetch_assoc($result))
+        if(mysqli_stmt_fetch($query))
         {
             do
             {
-                echo"<div class='clear' id='$row[Place_ID]'>
-                    <div class='bigLeft'><a href='https://www.google.com/maps/search/?api=1&query=Google&query_place_id=$row[Place_ID]'>$row[Name]</a></div>
+                echo"<div class='clear' id='$placeID'>
+                    <div class='bigLeft'><a href='https://www.google.com/maps/search/?api=1&query=Google&query_place_id=$placeID'>$placeName</a></div>
                     <input type='button' class='rightButton' value='Remove from Blacklist'>
                 </div>";
-            } while($row = mysqli_fetch_assoc($result));
+            } while(mysqli_stmt_fetch($query));
         }
         else
         {
             echo "No blacklisted places. To add a place to your blacklist, click on the Blacklist button after searching for a place";
         }
-        mysqli_free_result($result);
+        mysqli_free_result($query);
         mysqli_stmt_close($query);
         mysqli_close($con);
     ?>

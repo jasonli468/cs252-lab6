@@ -14,7 +14,7 @@
         if(mysqli_stmt_affected_rows($query) === 1)
         {
             $response_array['status'] = 'Success';
-            mail($email, "Hungry but Indecisive Boiler Password Has Been Reset", "This email is to inform you that your password has been reset. If you did not do this, please reply to this email IMMEDIATELY");
+            mail($email, "Hungry but Indecisive Boiler Password Has Been Reset", "This email is to inform you that your password has been reset. If you did not do this, please reply to this email IMMEDIATELY. Seriously, even though there's nothing important on here, this shouldn't be possible unless someone has access to your email.");
         }
         // If no rows updated, assume token does not exist for given email
         else
